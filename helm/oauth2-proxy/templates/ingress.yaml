@@ -17,24 +17,24 @@ metadata:
 {{- end }}
 spec:
   {{- if and .Values.ingress.className ( eq "true" ( include "ingress.supportsIngressClassName" . ) ) }}
-  ingressClassName: {{ .Values.ingress.className | quote }}
+  ingressClassName: {{ include "oauth2-proxy.tplvalues.render" ( dict "value" .Values.ingress.className "context" $) | quote }}
   {{- end }}
   rules:
     {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host | quote }}
+    - host: {{ include "oauth2-proxy.tplvalues.render" ( dict "value" $host "context" $) | quote }}
       http:
         paths:
 {{- if $extraPaths }}
-{{ toYaml $extraPaths | indent 10 }}
+{{ include "oauth2-proxy.tplvalues.render" ( dict "value" $extraPaths "context" $) | indent 10 }}
 {{- end }}
-          - path: {{ $ingressPath }}
+          - path: {{ include "oauth2-proxy.tplvalues.render" ( dict "value" $ingressPath "context" $) }}
             {{- if eq "true" ( include "ingress.supportsPathType" $ ) }}
-            pathType: {{ $ingressPathType }}
+            pathType: {{ include "oauth2-proxy.tplvalues.render" ( dict "value" $ingressPathType "context" $) }}
             {{- end }}
             backend: {{- include "ingress.backend" ( dict "serviceName" $serviceName "servicePort" $servicePort "context" $ )  | nindent 14 }}
     {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+{{ include "oauth2-proxy.tplvalues.render" ( dict "value" .Values.ingress.tls "context" $) | indent 4 }}
   {{- end -}}
 {{- end -}}
