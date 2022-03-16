@@ -67,7 +67,7 @@ spec:
         {{- end }}
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
-          - --{{ $key }}={{ $value }}
+          - --{{ $key }}={{ (include "oauth2-proxy.tplvalues.render" ( dict "value" $value "context" $)) }}
           {{- else }}
           - --{{ $key }}
           {{- end }}
