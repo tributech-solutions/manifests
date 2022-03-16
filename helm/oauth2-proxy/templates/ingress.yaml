@@ -11,9 +11,9 @@ metadata:
     app: {{ template "oauth2-proxy.name" . }}
 {{- include "oauth2-proxy.labels" . | indent 4 }}
   name: {{ template "oauth2-proxy.fullname" . }}
-{{- with .Values.ingress.annotations }}
+{{- if .Values.ingress.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+{{- include "oauth2-proxy.tplvalues.render" (dict "value" .Values.ingress.annotations "context" $) | nindent 4 }}
 {{- end }}
 spec:
   {{- if and .Values.ingress.className ( eq "true" ( include "ingress.supportsIngressClassName" . ) ) }}
